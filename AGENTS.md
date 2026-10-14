@@ -14,6 +14,10 @@ Read [docs/TECHNICAL.md](docs/TECHNICAL.md) for the why behind each step.
   (the build is `qemu-system-i386` only; x64 XP lacks drivers and the 32-bit 3D wrappers).
 - The boot partition is mounted at `/boot/efi` and contains `cmdline.txt`.
 
+## 0. Shortcut
+`bash install.sh` performs steps 2–5 and the Linux part of step 8 interactively (asks for ISO path and key; `--dry-run` to preview,
+`--no-system` to skip system files). Prefer it, then continue at step 6. The manual steps below are the reference.
+
 ## 1. Clone
 ```
 git clone https://github.com/v0ltfault/ps5-windows-xp.git ~/ps5-windows-xp

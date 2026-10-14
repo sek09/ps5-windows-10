@@ -29,10 +29,13 @@ TimeZone=35
 OemSkipWelcome=1
 
 [UserData]
-ProductKey="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"   ; <<< your XP key
-FullName="Player"                            ; <<< any name
+; <<< your XP key on the next line
+ProductKey="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+; <<< any name
+FullName="Player"
 OrgName=""
-ComputerName="PS5-XP"                        ; <<< any name, no spaces
+; <<< any computer name, no spaces
+ComputerName="PS5-XP"
 
 [Display]
 BitsPerPel=32

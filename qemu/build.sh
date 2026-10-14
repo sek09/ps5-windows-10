@@ -33,6 +33,6 @@ mkdir -p ../build && cd ../build
   --disable-werror --disable-docs
 
 echo "== 5/5 compile"
-make -j"$(nproc)"
+make -j${JOBS:-$(nproc)}
 ./qemu-system-i386 --version | head -1
 echo "DONE: $DEST/build/qemu-system-i386"

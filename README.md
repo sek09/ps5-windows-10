@@ -20,6 +20,7 @@ Tested with: Need for Speed Underground 1 & 2, Midnight Club 2, OpenArena, YouTu
 - [How it works (in one minute)](#how-it-works-in-one-minute)
 - [What you need](#what-you-need)
 - [Why 32-bit (x86) Windows XP and not x64](#why-32-bit-x86-windows-xp-and-not-x64)
+- [Quick install (one command)](#quick-install-one-command)
 - [Easy step-by-step guide](#easy-step-by-step-guide)
 - [Everyday use](#everyday-use)
 - [Known issues](#known-issues)
@@ -68,6 +69,22 @@ You never see Linux; it just looks like the PS5 boots into Windows XP.
 - **Old games are 32-bit.** XP-era games and their installers are 32-bit, and some old installers even contain
   16-bit pieces that a 64-bit Windows cannot run at all.
 - **Nothing to gain.** The only reason for x64 is more than 4 GB of memory, and XP games do not need it.
+
+---
+
+## Quick install (one command)
+
+If you just want it done: on PS5 Linux open **Konsole** and run these two lines. The installer asks for the location
+of your XP disc image and your product key, then does Steps 1–5 and 8.1–8.2 below by itself (it backs up anything
+it replaces and never touches your files without saying so; add `--dry-run` to only see what it would do).
+
+```
+git clone https://github.com/v0ltfault/ps5-windows-xp.git ~/ps5-windows-xp
+bash ~/ps5-windows-xp/install.sh
+```
+
+Then continue with **Step 6** (install XP), **Step 7** (drivers, 3D, browser) and **Step 8.3–8.5** (the tile).
+Prefer to understand each part? Follow the full guide below instead; it does exactly the same things by hand.
 
 ---
 
