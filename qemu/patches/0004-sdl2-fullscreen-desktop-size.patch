@@ -1,0 +1,39 @@
+--- a/ui/sdl2.c
++++ b/ui/sdl2.c
+@@ -99,11 +99,21 @@
+     }
+ #endif
+ 
+-    scon->real_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED,
+-                                         SDL_WINDOWPOS_UNDEFINED,
+-                                         surface_width(scon->surface),
+-                                         surface_height(scon->surface),
+-                                         flags);
++    int win_x = SDL_WINDOWPOS_UNDEFINED, win_y = SDL_WINDOWPOS_UNDEFINED,
++        win_w = surface_width(scon->surface), win_h = surface_height(scon->surface);
++    if (gui_fullscreen) {
++        /*
++         * PS5 kiosk build: X runs with no window manager, so nothing enforces full screen and the
++         * window would take the guest mode size (an 800x600 game showed in the top-left corner).
++         * Size it to the display; the 2D logical size and the mesapt render scaler then stretch
++         * smaller modes to fill it, keeping the aspect ratio.
++         */
++        SDL_DisplayMode dm;
++        if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
++            win_x = 0; win_y = 0; win_w = dm.w; win_h = dm.h;
++        }
++    }
++    scon->real_window = SDL_CreateWindow("", win_x, win_y, win_w, win_h, flags);
+     if (scon->opengl) {
+         const char *driver = "opengl";
+ 
+@@ -143,7 +153,8 @@
+ 
+ void sdl2_window_resize(struct sdl2_console *scon)
+ {
+-    if (!scon->real_window) {
++    if (!scon->real_window || gui_fullscreen) {
++        /* PS5 kiosk build: a full-screen window keeps the display size (see sdl2_window_create) */
+         return;
+     }
+ 

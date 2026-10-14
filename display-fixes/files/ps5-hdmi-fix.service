@@ -1,0 +1,11 @@
+[Unit]
+Description=Load PS5 HDMI bridge re-arm module (ps5_hdmi_fix)
+Before=plasma-autostart.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/modprobe ps5_hdmi_fix
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

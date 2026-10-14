@@ -1,0 +1,24 @@
+#!/bin/bash
+# PS5 Linux session chooser: a "ps5vm=<name>" tag on the kernel command line (set by the
+# home-screen tile that sent the Linux loader) boots straight into that virtual machine,
+# full screen, and powers the console off when it exits. No tag = the normal Plasma desktop.
+# If the VM fails to start (it exits within its first minute), fall back to the desktop.
+XPDIR=${XPDIR:-/home/steam/xp}      # where xp.sh and the VM files live
+HOME_DIR=${HOME_DIR:-/home/steam}   # home of the desktop user
+
+tag=$(tr " " "\n" < /proc/cmdline | sed -n "s/^ps5vm=//p" | head -1)
+[ -z "$tag" ] && [ -f "$HOME_DIR/.ps5vm" ] && tag=$(cat "$HOME_DIR/.ps5vm")   # test hook: echo xp > ~/.ps5vm
+case "$tag" in
+  xp)  # Start X straight at 1080p@60 (ps5-xp.conf.d): some monitors' preferred 1080p@120 loses the signal on the PS5 link.
+       # If X fails to start with that config, try once more with the normal one.
+       rm -f /tmp/xp-kiosk-started
+       /usr/bin/startx "$XPDIR/xp.sh" kiosk -- :0 vt1 -keeptty -configdir ps5-xp.conf.d
+       if [ ! -f /tmp/xp-kiosk-started ]; then
+         rm -f /tmp/.X0-lock /tmp/.X11-unix/X0
+         /usr/bin/startx "$XPDIR/xp.sh" kiosk -- :0 vt1 -keeptty
+       fi
+       [ -f /tmp/xp-kiosk-failed ] || exit 0
+       rm -f /tmp/.X0-lock /tmp/.X11-unix/X0
+       exec /usr/bin/startx /usr/bin/startplasma-x11 -- :0 vt1 -keeptty ;;
+  *)   exec /usr/bin/startx /usr/bin/startplasma-x11 -- :0 vt1 -keeptty ;;
+esac

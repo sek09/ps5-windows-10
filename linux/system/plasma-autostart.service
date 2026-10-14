@@ -1,0 +1,33 @@
+[Unit]
+Description=Autostart Plasma X11 session on PS5 Linux (the image masks getty@tty1)
+After=multi-user.target systemd-user-sessions.service
+Wants=multi-user.target
+
+[Service]
+Type=simple
+User=steam
+Group=steam
+PAMName=login
+WorkingDirectory=/home/steam
+Environment=HOME=/home/steam
+Environment=USER=steam
+Environment=LOGNAME=steam
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=LIBSEAT_BACKEND=logind
+Environment=WLR_LIBINPUT_NO_DEVICES=1
+Environment=XDG_MENU_PREFIX=plasma-
+ExecStartPre=/usr/bin/mkdir -p /run/user/1000
+ExecStartPre=/usr/bin/chown steam:steam /run/user/1000
+ExecStartPre=-/bin/bash -c 'rm -f /tmp/.X0-lock /tmp/.X11-unix/X0'
+ExecStart=/usr/local/bin/ps5-session
+Restart=on-failure
+RestartSec=5
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=graphical.target

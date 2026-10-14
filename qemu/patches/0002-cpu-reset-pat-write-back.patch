@@ -1,0 +1,12 @@
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -7262,7 +7262,8 @@
+     /* All units are in INIT state.  */
+     env->xstate_bv = 0;
+ 
+-    env->pat = 0x0007040600070406ULL;
++    /* PS5 build: all write-back when QEMU_FORCE_WB_PAT is set (see kvm_wrmsr_pat_ignore). */
++    env->pat = getenv("QEMU_FORCE_WB_PAT") ? 0x0606060606060606ULL : 0x0007040600070406ULL;
+ 
+     if (kvm_enabled()) {
+         /*

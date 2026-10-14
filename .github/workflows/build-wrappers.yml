@@ -1,0 +1,32 @@
+name: build-wrappers
+on: { workflow_dispatch: {} }
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gcc-mingw-w64-i686 binutils-mingw-w64-i686 mingw-w64-tools xxd make
+          i686-w64-mingw32-gcc --version | head -1
+      - name: Source
+        run: |
+          git clone https://github.com/kjliew/qemu-3dfx.git
+          cd qemu-3dfx && git checkout 920661f && git log --oneline -1
+      - name: Build mesa wrapper
+        run: |
+          cd qemu-3dfx/wrappers/mesa && mkdir build && cd build
+          bash ../../../scripts/conf_wrapper && make
+          i686-w64-mingw32-objdump -p opengl32.dll | grep "DLL Name"
+      - name: Build 3dfx wrapper
+        run: |
+          cd qemu-3dfx/wrappers/3dfx && mkdir build && cd build
+          bash ../../../scripts/conf_wrapper && make
+          i686-w64-mingw32-objdump -p instdrv.exe | grep "DLL Name"
+      - name: Collect
+        run: |
+          mkdir out
+          cp qemu-3dfx/wrappers/mesa/build/opengl32.dll qemu-3dfx/wrappers/3dfx/build/{glide.dll,glide2x.dll,glide3x.dll,fxptl.sys,instdrv.exe,fxmemmap.vxd} out/
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with: { name: wrappers, path: out }

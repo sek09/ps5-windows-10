@@ -1,0 +1,15 @@
+name: bright
+on: { workflow_dispatch: {} }
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gcc-mingw-w64-i686
+      - run: |
+          cd guest/bright
+          i686-w64-mingw32-windres bright.rc -O coff -o bright_res.o
+          i686-w64-mingw32-gcc -O2 -s -mwindows -o bright.exe bright.c bright_res.o -lws2_32 -lcomctl32 -lgdi32 -luser32 -lshell32
+          i686-w64-mingw32-objdump -p bright.exe | grep "DLL Name"
+      - uses: actions/upload-artifact@v4
+        with: { name: bright, path: guest/bright/bright.exe }

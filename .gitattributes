@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.CMD text eol=crlf
+*.cmd text eol=crlf
+*.REG text eol=crlf
+*.JS text eol=crlf
+*.sif.template text eol=crlf
+*.png binary

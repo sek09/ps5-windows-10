@@ -1,0 +1,34 @@
+--- a/target/i386/kvm/kvm.c
++++ b/target/i386/kvm/kvm.c
+@@ -2613,6 +2613,18 @@
+     return ret;
+ }
+ 
++/*
++ * PS5 build: with QEMU_FORCE_WB_PAT set, guest writes to the PAT MSR are ignored and the PAT stays
++ * all write-back (its reset value, see x86_cpu_reset_hold). On AMD hosts KVM honors the guest PAT,
++ * and XP's VMware SVGA driver maps the emulated VRAM uncached, so every 2D draw ran at uncached-bus
++ * speed. Every device in this VM is emulated (no passthrough), so the cache type never matters for
++ * correctness.
++ */
++static bool kvm_wrmsr_pat_ignore(X86CPU *cpu, uint32_t msr, uint64_t val)
++{
++    return true;
++}
++
+ static bool kvm_rdmsr_core_thread_count(X86CPU *cpu,
+                                         uint32_t msr,
+                                         uint64_t *val)
+@@ -3170,6 +3182,12 @@
+         exit(1);
+     }
+ 
++    if (getenv("QEMU_FORCE_WB_PAT") &&
++        !kvm_filter_msr(s, MSR_PAT, NULL, kvm_wrmsr_pat_ignore)) {
++        error_report("Could not install MSR_PAT handler!");
++        exit(1);
++    }
++
+     return 0;
+ }
+ 

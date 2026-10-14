@@ -1,0 +1,51 @@
+; Unattended Windows XP Professional SP3 (32-bit / x86) install.
+; Copy to a folder named "floppy" next to xp.sh, rename to winnt.sif and fill in the four lines marked <<<.
+; Your product key comes from YOUR copy of Windows XP (the sticker or the box). It is never stored in this project.
+[Data]
+AutoPartition=1
+MsDosInitiated="0"
+UnattendedInstall="Yes"
+
+[Unattended]
+UnattendMode=FullUnattended
+UnattendSwitch="Yes"
+OemSkipEula=Yes
+OemPreinstall=No
+Repartition=Yes
+FileSystem=NTFS
+WaitForReboot="No"
+TargetPath=\WINDOWS
+DriverSigningPolicy=Ignore
+NonDriverSigningPolicy=Ignore
+
+[GuiUnattended]
+AdminPassword="*"
+EncryptedAdminPassword=NO
+AutoLogon=Yes
+AutoLogonCount=99
+OEMSkipRegional=1
+; 35 = Eastern Time. Others: 4 = Pacific, 10 = Mountain, 20 = Central, 85 = GMT (London)
+TimeZone=35
+OemSkipWelcome=1
+
+[UserData]
+ProductKey="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"   ; <<< your XP key
+FullName="Player"                            ; <<< any name
+OrgName=""
+ComputerName="PS5-XP"                        ; <<< any name, no spaces
+
+[Display]
+BitsPerPel=32
+Xresolution=1024
+Yresolution=768
+Vrefresh=60
+
+[RegionalSettings]
+LanguageGroup=1
+Language=00000409
+
+[Identification]
+JoinWorkgroup=WORKGROUP
+
+[Networking]
+InstallDefaultComponents=Yes

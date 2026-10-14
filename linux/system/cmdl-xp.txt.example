@@ -1,0 +1,1 @@
+root=LABEL=cachyos rw rootwait console=ttyTitania0 console=tty0 mitigations=off idle=halt preempt=full hdcp=0 systemd.mask=first-boot.service systemd.mask=getty@tty1.service ps5vm=xp

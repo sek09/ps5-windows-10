@@ -1,0 +1,1 @@
+SUBSYSTEM=="usb", ATTR{idVendor}=="054c", ATTR{idProduct}=="0ce6|0df2|05c4|09cc", MODE="0666"
