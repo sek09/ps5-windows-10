@@ -21,7 +21,7 @@ WSL2 on the PC is useful for editing the repository, but it is **not** the runti
 On the PS5 Linux desktop, open a terminal and run:
 
 ```bash
-git clone https://github.com/sek09/ps5-windows-10.git ~/ps5-windows-10
+git clone -b windows-10-port https://github.com/sek09/ps5-windows-10.git ~/ps5-windows-10
 cd ~/ps5-windows-10
 bash qemu/build-windows10.sh
 ```
