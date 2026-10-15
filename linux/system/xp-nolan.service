@@ -1,0 +1,13 @@
+[Unit]
+Description=Block the Windows XP VM (group xpnet) from the home network
+After=network-pre.target
+Before=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/xp-nolan.nft
+ExecStop=/usr/sbin/nft delete table inet xp_nolan
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,13 @@ QEMU=${QEMU:-$HOME/qemu-3dfx/build/qemu-system-i386}             # QEMU 9.2.2 + 
 OUTPUT=${OUTPUT:-DisplayPort-0}                           # xrandr output name of the PS5 HDMI port
 RAM=${RAM:-2048}                                                 # MB for XP (32-bit XP uses at most ~3.5 GB)
 CPUS=${CPUS:-8}
+NOLAN=${NOLAN:-0}                                                # 1 = keep XP off the home network, internet only (optional, see README)
+# NOLAN=1 runs this script again under the group "xpnet", so the firewall rule from linux/system/xp-nolan.nft can tell
+# QEMU's connections apart from the rest of the PS5. Needs the one-time setup in README.md first.
+if [ "$NOLAN" = 1 ] && [ "$(id -gn)" != xpnet ]; then
+  getent group xpnet | grep -qw "$(id -un)" || { echo "NOLAN=1: user $(id -un) is not in group xpnet, see README.md"; exit 1; }
+  exec sg xpnet -c "$(printf '%q ' bash "$(readlink -f "$0")" "$@")"
+fi
 cd "$XPDIR" || exit 1
 export DISPLAY=:0 SDL_VIDEODRIVER=x11
 MODE=${1:-run}; [ $# -gt 0 ] && shift

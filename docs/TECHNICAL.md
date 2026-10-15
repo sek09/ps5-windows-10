@@ -71,7 +71,17 @@ qemu-system-i386 -accel kvm -cpu host,-hypervisor -m 2048 -smp 8,sockets=1,cores
 
 Environment overrides: `XPDIR`, `QEMU`, `OUTPUT` (xrandr output, default `DisplayPort-0`), `RAM`, `CPUS`, `TOOLS`,
 `PADPID` (DualSense `0x0ce6`, Edge `0x0df2`, DS4 `0x05c4`/`0x09cc`), `MOUSEDEV`, `WBPAT=0` (disable the PAT fix),
-`AUDIO`.
+`AUDIO`, `NOLAN=1` (see below).
+
+### Optional LAN isolation (NOLAN=1)
+
+With user networking (slirp) nothing can connect into the guest, but every guest connection is an outbound socket of
+the QEMU process, so the guest can reach LAN hosts through the PS5. `NOLAN=1` makes xp.sh re-exec itself with
+`sg xpnet`, so QEMU's sockets carry group `xpnet`. `linux/system/xp-nolan.nft` (loaded at boot by `xp-nolan.service`)
+then rejects that group's traffic to RFC 1918, link-local, CGNAT (Tailscale), multicast and IPv6 ULA/link-local
+addresses. It allows DNS (QEMU forwards guest lookups to the host resolver, often the router) and loopback (10.0.2.2
+forwards, brightd). Off by default; setup in the README. Tested on Linux in a throwaway network namespace (rules,
+reload, group re-exec); not yet tested on the PS5 itself.
 
 ### Kiosk behaviour
 

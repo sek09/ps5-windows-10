@@ -23,6 +23,7 @@ Tested with: Need for Speed Underground 1 & 2, Midnight Club 2, OpenArena, YouTu
 - [Quick install (one command)](#quick-install-one-command)
 - [Easy step-by-step guide](#easy-step-by-step-guide)
 - [Everyday use](#everyday-use)
+  - [Optional: keep XP off your home network](#optional-keep-xp-off-your-home-network)
 - [Known issues](#known-issues)
 - [If something goes wrong](#if-something-goes-wrong)
 - [For technical people / AI assistants](#for-technical-people--ai-assistants)
@@ -253,6 +254,31 @@ That's it.
 
 > **"Repairing storage" on the next PS5 start** is normal after using Linux: the PS5's own system never gets a normal
 > shutdown when Linux takes over, so it checks the drive once. It is harmless and happens with any PS5 Linux setup.
+
+### Optional: keep XP off your home network
+
+By default nothing on the internet can connect *into* XP (it sits behind QEMU's own NAT and your router), but XP
+can still connect *out* to other devices on your home network through the PS5. If XP ever caught malware, it could
+try to reach them. This optional setup lets XP reach the internet only. It is **off by default and not part of the
+normal install**: if it causes problems for you, turn it off again (below).
+
+One time, in a terminal on the PS5:
+
+```
+sudo groupadd -f xpnet && sudo usermod -aG xpnet $USER
+sudo cp ~/ps5-windows-xp/linux/system/xp-nolan.nft /etc/xp-nolan.nft
+sudo cp ~/ps5-windows-xp/linux/system/xp-nolan.service /etc/systemd/system/
+sudo systemctl daemon-reload && sudo systemctl enable --now xp-nolan.service
+```
+
+Then in `~/xp/xp.sh` change the line `NOLAN=${NOLAN:-0}` to `NOLAN=${NOLAN:-1}`.
+
+- **Check:** in XP, websites still load, but the address of your router (for example `http://192.168.1.1`)
+  no longer opens.
+- **What it blocks:** every private address (`192.168.x.x`, `10.x.x.x`, `172.16–31.x.x`, Tailscale's `100.64.x.x`)
+  except DNS, which XP needs to look up websites. The rest of the PS5 is not affected.
+- **Turn it off:** change the line back to `0`, then `sudo systemctl disable --now xp-nolan.service`.
+- Untested on every network setup. If something on your network stops working while XP runs, turn it off.
 
 ---
 

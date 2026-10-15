@@ -1,0 +1,29 @@
+#!/usr/sbin/nft -f
+# Optional: keep the XP guest off the home network (internet only). Used with NOLAN=1 in xp.sh, which runs QEMU
+# under the group "xpnet"; this blocks that group from private/LAN addresses. Everything else on the PS5 is untouched.
+# With QEMU user networking every guest connection is a socket of the QEMU process, so the host can filter it.
+# Setup and caveats: README.md, "Keep XP off your home network".
+
+# The group must exist before this file is loaded (nft refuses an unknown group name).
+define LAN4 = { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16, 100.64.0.0/10, 224.0.0.0/4, 255.255.255.255 }
+define LAN6 = { fc00::/7, fe80::/10, ff00::/8 }
+
+# Recreate the table on every load (the first line makes sure it exists, so the delete never fails).
+table inet xp_nolan
+delete table inet xp_nolan
+
+table inet xp_nolan {
+  chain out {
+    type filter hook output priority 0; policy accept;
+    meta skgid != "xpnet" accept
+    # DNS: QEMU forwards the guest's lookups to the PS5's own resolver, usually the router.
+    udp dport 53 accept
+    tcp dport 53 accept
+    ip daddr 127.0.0.0/8 accept   # host services QEMU itself provides (10.0.2.2 forwards, brightness backend)
+    # TCP gets a reset so the guest fails at once instead of waiting for a timeout.
+    ip daddr $LAN4 meta l4proto tcp reject with tcp reset
+    ip daddr $LAN4 reject
+    ip6 daddr $LAN6 meta l4proto tcp reject with tcp reset
+    ip6 daddr $LAN6 reject
+  }
+}
