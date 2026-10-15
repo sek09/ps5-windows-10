@@ -1,6 +1,6 @@
 <p align="center"><img src="assets/banner.png" alt="Windows XP on PlayStation 5" width="100%"></p>
 
-# Windows XP on PlayStation 5
+# Windows XP base project + experimental Windows 10 port
 
 Real Windows XP, running at full speed on a jailbroken PS5, with **its own tile on the PS5 home screen**,
 **real 3D games** (OpenGL, Glide and Direct3D through the PS5 GPU), **sound**, a **DualSense** controller,
@@ -8,6 +8,16 @@ a modern **web browser**, and a **brightness slider**. Press the tile, and a few
 Shut XP down, and the console turns off.
 
 Tested with: Need for Speed Underground 1 & 2, Midnight Club 2, OpenArena, YouTube in the browser.
+
+## Experimental Windows 10 port
+
+This fork is developing a separate Windows 10 VM path while preserving the original Windows XP setup. The Windows 10 path is **early and untested**; it is not yet a drop-in replacement for the XP experience, and accelerated 3D graphics are not implemented.
+
+- [Windows 10 port notes and setup](docs/WINDOWS10.md)
+- [Windows 10 QEMU build script](qemu/build-windows10.sh)
+- [Windows 10 VM launcher](linux/windows10/windows10.sh)
+
+The Windows 10 VM requires PS5 Linux with `/dev/kvm`, plus your own Windows 10 installation ISO and license. Build and run QEMU on the PS5 Linux environment; WSL2 is only suitable for editing the project and preparing files.
 
 > **Not affiliated with Microsoft or Sony.** Windows and the Windows XP logo are trademarks of Microsoft;
 > PlayStation and PS5 are trademarks of Sony Interactive Entertainment. This project contains **no Windows files,
